@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>De Matinhos a Lages — Congregação Jardim Bela Vista</title>
+
+  <!-- Fontes semelhantes às da arte -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Folha de estilos -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Fundo da praia no topo -->
+  <header class="hero">
+    <div class="hero-overlay"></div>
+
+    <div class="container hero-content">
+      <!-- Linha dos Brasões e Conexão -->
+      <div class="badges-row">
+
+        <!-- Brasão Matinhos -->
+        <div class="badge-circle">
+          <img src="matinhos.jpeg" alt="Brasão de Matinhos" class="badge-image" />
+        </div>
+
+        <!-- Linha pontilhada com coração -->
+        <div class="heart-connector">
+          <svg viewBox="0 0 160 80" class="connector-svg">
+            <path class="dashed-path" d="M 5 55 C 50 55, 95 45, 95 25 C 95 12, 78 12, 78 24 C 78 38, 110 55, 150 52" fill="none" stroke="#1b3b5a" stroke-width="2.5" stroke-dasharray="5,5" />
+            <polyline points="143,47 152,52 144,58" fill="none" stroke="#1b3b5a" stroke-width="2.5" stroke-linecap="round" />
+          </svg>
+        </div>
+
+        <!-- Brasão Lages -->
+        <div class="badge-circle">
+          <img src="lages.jpeg" alt="Brasão de Lages" class="badge-image" />
+        </div>
+
+      </div>
+
+      <!-- Título Principal Cursivo -->
+      <div class="main-title-wrapper">
+        <span class="title-de">De</span>
+        <h1 class="main-title">
+          <span class="text-blue">Matinhos</span>
+          <span class="title-a">a</span>
+          <span class="text-green">Lages</span>
+          <span class="mini-heart">♡</span>
+        </h1>
+      </div>
+
+      <!-- Faixa Azul Pincelada -->
+      <div class="ribbon-banner">
+        UMA LEMBRANÇA ESPECIAL, PREPARADA COM CARINHO! ♥
+      </div>
+
+      <!-- Botão Principal (Call to Action) -->
+      <div class="cta-wrapper">
+        <button id="btnOpenVideo" class="btn-video" type="button">
+          <span class="play-icon">▶</span>
+          <span class="btn-texts">
+            <strong>CLIQUE AQUI PARA VER</strong>
+            <small>Assista ao vídeo e conheça mais!</small>
+          </span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="message-section">
+    <div class="container message-box">
+      <p class="welcome-text">
+        Venha conhecer as congregações de <strong class="highlight-blue">Matinhos</strong>,
+        desfrutar das belezas do nosso litoral e sentir
+        <em class="highlight-script">o amor cristão</em> que une nossos irmãos.
+      </p>
+
+      <div class="signature-block">
+        <span class="signature-intro">Com carinho, ♥</span>
+        <div class="congregation-line">
+          <span class="flourish" aria-hidden="true">🌿</span>
+          <h2 class="congregation-name">CONGREGAÇÃO JARDIM BELA VISTA</h2>
+          <span class="flourish" aria-hidden="true">🌿</span>
+        </div>
+        <div class="city-subtitle">
+          <span>MATINHOS/PR</span>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <section class="guestbook-section" aria-labelledby="guestbookTitle">
+    <div class="container">
+      <h2 id="guestbookTitle" class="guestbook-title">Mural de Recados e Lembranças</h2>
+      <p class="guestbook-subtitle">Deixe uma mensagem fraterna conectando Matinhos e Lages.</p>
+
+      <form id="messageForm" class="message-form">
+        <div class="form-row">
+          <input
+            type="text"
+            id="senderName"
+            placeholder="Seu nome (ex.: Família Silva)"
+            required
+          />
+          <select id="senderOrigin" aria-label="Origem">
+            <option value="Matinhos/PR">Matinhos/PR</option>
+            <option value="Lages/SC">Lages/SC</option>
+          </select>
+        </div>
+
+        <textarea
+          id="messageText"
+          rows="3"
+          placeholder="Escreva sua mensagem de carinho..."
+          required
+        ></textarea>
+
+        <button type="submit" class="btn-send">Publicar mensagem ♥</button>
+      </form>
+
+      <!-- Barra de acesso do administrador -->
+      <div class="admin-bar">
+        <div id="adminLockedBox" class="admin-login">
+          <input
+            type="password"
+            id="adminPasswordInput"
+            placeholder="Senha de administrador"
+            aria-label="Senha de administrador"
+          />
+          <button type="button" id="btnAdminLogin" class="btn-admin">
+            Entrar como admin
+          </button>
+        </div>
+
+        <div id="adminUnlockedBox" class="admin-active" style="display: none;">
+          <span class="admin-status">Modo administrador ativo</span>
+          <button type="button" id="btnAdminLogout" class="btn-admin-outline">
+            Sair do modo admin
+          </button>
+        </div>
+      </div>
+
+      <div id="messagesList" class="messages-list"></div>
+    </div>
+  </section>
+
+  <footer class="verse-footer">
+    <div class="container footer-inner">
+      <span class="footer-heart" aria-hidden="true">♥</span>
+      <p>“Assim continuai a mostrar o amor fraternal.” – Hebreus 13:1</p>
+      <span class="footer-heart" aria-hidden="true">♥</span>
+    </div>
+  </footer>
+
+  <!-- Modal de vídeo -->
+  <div id="videoModal" class="modal-backdrop" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-card">
+      <button id="btnCloseModal" class="modal-close" type="button" aria-label="Fechar janela">✕</button>
+      <h3 id="modalTitle" class="modal-title">Lembrança Especial: De Matinhos a Lages</h3>
+      <p class="modal-desc">Assista à nossa lembrança especial.</p>
+
+      <div class="video-frame-wrapper">
+        <video
+          id="localVideoPlayer"
+          src="videomatinhos.mp4"
+          controls
+          playsinline
+          preload="metadata"
+        ></video>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
