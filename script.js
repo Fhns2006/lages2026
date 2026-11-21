@@ -36,10 +36,12 @@ const ADMIN_SENHA = 'lages2026';
 
 let isAdmin = false;
 let mensagens = [];
+const cacheCidadesPorEstado = new Map();
 
 const messageForm = document.getElementById('messageForm');
 const senderNameInput = document.getElementById('senderName');
-const senderOriginSelect = document.getElementById('senderOrigin');
+const senderStateSelect = document.getElementById('senderState');
+const senderCitySelect = document.getElementById('senderCity');
 const messageTextInput = document.getElementById('messageText');
 const messagesList = document.getElementById('messagesList');
 
@@ -55,6 +57,46 @@ const headersSupabase = {
   'Content-Type': 'application/json',
   'Prefer': 'return=representation'
 };
+
+function resetarCidades(textoPlaceholder = 'Escolha o estado primeiro') {
+  senderCitySelect.innerHTML = `<option value="" disabled selected>${textoPlaceholder}</option>`;
+  senderCitySelect.disabled = true;
+}
+
+senderStateSelect.addEventListener('change', async () => {
+  const uf = senderStateSelect.value;
+  if (!uf) {
+    resetarCidades();
+    return;
+  }
+
+  resetarCidades('Carregando cidades...');
+
+  try {
+    let cidades = cacheCidadesPorEstado.get(uf);
+
+    if (!cidades) {
+      const resp = await fetch(
+        `https://servicodados.ibge.gov.br/api/v1/localidades/estados/${uf}/municipios?orderBy=nome`
+      );
+      if (!resp.ok) throw new Error('Falha ao buscar cidades');
+      cidades = await resp.json();
+      cacheCidadesPorEstado.set(uf, cidades);
+    }
+
+    senderCitySelect.innerHTML = '<option value="" disabled selected>Selecione a cidade</option>';
+    cidades.forEach((cidade) => {
+      const opt = document.createElement('option');
+      opt.value = cidade.nome;
+      opt.textContent = cidade.nome;
+      senderCitySelect.appendChild(opt);
+    });
+
+    senderCitySelect.disabled = false;
+  } catch (err) {
+    resetarCidades('Erro ao carregar cidades');
+  }
+});
 
 async function carregarMensagens() {
   try {
@@ -153,10 +195,13 @@ messageForm.addEventListener('submit', async (event) => {
   event.preventDefault();
 
   const nome = senderNameInput.value.trim();
-  const origem = senderOriginSelect.value;
+  const uf = senderStateSelect.value;
+  const cidade = senderCitySelect.value;
   const texto = messageTextInput.value.trim();
 
-  if (!nome || !texto) return;
+  if (!nome || !uf || !cidade || !texto) return;
+
+  const origem = `${cidade}/${uf}`;
 
   try {
     const resp = await fetch(`${SUPABASE_REST_URL}/recados`, {
@@ -166,6 +211,8 @@ messageForm.addEventListener('submit', async (event) => {
     });
     if (!resp.ok) throw new Error('Falha ao publicar recado');
 
+    senderStateSelect.value = '';
+    resetarCidades();
     messageTextInput.value = '';
     messageTextInput.focus();
     await carregarMensagens();
