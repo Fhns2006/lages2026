@@ -140,9 +140,16 @@
             <option value="TO">Tocantins (TO)</option>
           </select>
 
-          <select id="senderCity" aria-label="Cidade" disabled required>
-            <option value="" disabled selected>Escolha o estado primeiro</option>
-          </select>
+          <input
+            type="text"
+            id="senderCity"
+            list="citiesDatalist"
+            placeholder="Digite a cidade (opcional)"
+            aria-label="Cidade (opcional)"
+            autocomplete="off"
+            disabled
+          />
+          <datalist id="citiesDatalist"></datalist>
         </div>
 
         <textarea

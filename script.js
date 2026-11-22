@@ -41,7 +41,8 @@ const cacheCidadesPorEstado = new Map();
 const messageForm = document.getElementById('messageForm');
 const senderNameInput = document.getElementById('senderName');
 const senderStateSelect = document.getElementById('senderState');
-const senderCitySelect = document.getElementById('senderCity');
+const senderCityInput = document.getElementById('senderCity');
+const citiesDatalist = document.getElementById('citiesDatalist');
 const messageTextInput = document.getElementById('messageText');
 const messagesList = document.getElementById('messagesList');
 
@@ -58,19 +59,21 @@ const headersSupabase = {
   'Prefer': 'return=representation'
 };
 
-function resetarCidades(textoPlaceholder = 'Escolha o estado primeiro') {
-  senderCitySelect.innerHTML = `<option value="" disabled selected>${textoPlaceholder}</option>`;
-  senderCitySelect.disabled = true;
+function resetarCampoCidade(placeholderTexto = 'Digite a cidade (opcional)', desabilitar = true) {
+  senderCityInput.value = '';
+  senderCityInput.placeholder = placeholderTexto;
+  senderCityInput.disabled = desabilitar;
+  citiesDatalist.innerHTML = '';
 }
 
 senderStateSelect.addEventListener('change', async () => {
   const uf = senderStateSelect.value;
   if (!uf) {
-    resetarCidades();
+    resetarCampoCidade('Digite a cidade (opcional)', true);
     return;
   }
 
-  resetarCidades('Carregando cidades...');
+  resetarCampoCidade('Carregando cidades...', true);
 
   try {
     let cidades = cacheCidadesPorEstado.get(uf);
@@ -84,17 +87,20 @@ senderStateSelect.addEventListener('change', async () => {
       cacheCidadesPorEstado.set(uf, cidades);
     }
 
-    senderCitySelect.innerHTML = '<option value="" disabled selected>Selecione a cidade</option>';
+    const fragment = document.createDocumentFragment();
     cidades.forEach((cidade) => {
       const opt = document.createElement('option');
       opt.value = cidade.nome;
-      opt.textContent = cidade.nome;
-      senderCitySelect.appendChild(opt);
+      fragment.appendChild(opt);
     });
 
-    senderCitySelect.disabled = false;
+    citiesDatalist.innerHTML = '';
+    citiesDatalist.appendChild(fragment);
+
+    senderCityInput.placeholder = 'Digite e escolha a cidade (opcional)';
+    senderCityInput.disabled = false;
   } catch (err) {
-    resetarCidades('Erro ao carregar cidades');
+    resetarCampoCidade('Digite a cidade (opcional)', false);
   }
 });
 
@@ -196,12 +202,12 @@ messageForm.addEventListener('submit', async (event) => {
 
   const nome = senderNameInput.value.trim();
   const uf = senderStateSelect.value;
-  const cidade = senderCitySelect.value;
+  const cidade = senderCityInput.value.trim();
   const texto = messageTextInput.value.trim();
 
-  if (!nome || !uf || !cidade || !texto) return;
+  if (!nome || !uf || !texto) return;
 
-  const origem = `${cidade}/${uf}`;
+  const origem = cidade ? `${cidade}/${uf}` : uf;
 
   try {
     const resp = await fetch(`${SUPABASE_REST_URL}/recados`, {
@@ -212,7 +218,7 @@ messageForm.addEventListener('submit', async (event) => {
     if (!resp.ok) throw new Error('Falha ao publicar recado');
 
     senderStateSelect.value = '';
-    resetarCidades();
+    resetarCampoCidade('Digite a cidade (opcional)', true);
     messageTextInput.value = '';
     messageTextInput.focus();
     await carregarMensagens();
